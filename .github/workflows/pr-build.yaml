@@ -235,3 +235,32 @@ jobs:
             build-args: |
               dockerRepository=${{env.REGISTRY}}
               tag=latest
+  
+  
+  build-obr-generic:
+    name: Build OBR-Generic using galasabld image and maven
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          path: obr
+      
+      - name: Checkout framework
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/framework
+          path: framework
+        
+      - name: Checkout managers
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/managers
+          path: managers
+    
+      - name: Checkout extensions
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/extensions
+          path: extensions
