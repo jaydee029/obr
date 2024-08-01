@@ -318,6 +318,6 @@ jobs:
       
       - name: Build kubectl
         run: |
-         docker run --rm ghcr.io/galasa-dev/kubectl:main cp -vr /opt/k8s/bin/kubectl ${{github.workspace}}/obr/
+         docker run --rm ghcr.io/galasa-dev/kubectl:main cp /opt/k8s/bin/kubectl ${{github.workspace}}/obr/
       
      
