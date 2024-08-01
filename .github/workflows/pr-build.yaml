@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAMESPACE: galasa-dev
+  NAMESPACE: jaydee029
   IMAGE_TAG: main
   
 jobs:
@@ -234,3 +234,57 @@ jobs:
             build-args: |
               dockerRepository=${{env.REGISTRY}}
               baseVersion=latest
+  
+  
+  build-obr-generic:
+    name: Build OBR-Generic using galasabld image and maven
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          path: obr
+      
+      - name: Checkout framework
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/framework
+          path: framework
+        
+      - name: Checkout managers
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/managers
+          path: managers
+    
+      - name: Checkout extensions
+        uses: actions/checkout@v4
+        with:
+          repository: ${{env.NAMESPACE}}/extensions
+          path: extensions
+      
+      - name:  Generate Galasa OBR-generic
+        run: |
+          docker run --rm -v ${{github.workspace}}:/var/root/ ghcr.io/${{env.NAMESPACE}}/galasabld-amd64:${{env.IMAGE_TAG}} template --releaseMetadata var/root/framework/release.yaml --releaseMetadata /var/root/extensions/release.yaml --releaseMetadata /var/root/managers/release.yaml --releaseMetadata /var/root/obr/release.yaml --template /var/root/obr/obr-generic/pom.template --output /var/root/obr/obr-generic/pom.xml --obr
+           
+      - name: Display Galasa OBR-generic pom.xml
+        run: |
+          cat ${{github.workspace}}/obr/obr-generic/pom.xml
+        
+      - name: Build Galasa OBR with maven
+        run: |
+          mvn -f ${{github.workspace}}/obr/obr-generic/pom.xml process-sources -Dgpg.skip=true \
+          -Dgalasa.source.repo=https://development.galasa.dev/main/maven-repo/obr \
+          -Dgalasa.central.repo=https://repo.maven.apache.org/maven2/ \
+          dev.galasa:galasa-maven-plugin:0.15.0:obrembedded \
+          --batch-mode --errors --fail-at-end
+        
+      - name: Build OBR-generic Image for testing
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{github.workspace}}/obr/dockerfiles/dockerfile.obrgeneric
+          load: true
+          tags: obr-generic:test
+  
