@@ -281,7 +281,7 @@ jobs:
             labels: ${{ steps.metadata.outputs.labels }}
             build-args: |
               dockerRepository=${{env.REGISTRY}}
-              tag=latest
+              tagVersion=latest
             
         - name: Recycle JavadocMavenrepo application in ArgoCD
           run: |
