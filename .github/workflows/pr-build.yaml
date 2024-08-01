@@ -276,7 +276,7 @@ jobs:
       - name: Build Galasa OBR with maven
         run: |
           mvn -f ${{github.workspace}}/obr/obr-generic/pom.xml process-sources -Dgpg.skip=true \
-          -Dgalasa.source.repo=https://development.galasa.dev/gh/maven-repo/obr \
+          -Dgalasa.source.repo=https://development.galasa.dev/main/maven-repo/obr \
           -Dgalasa.central.repo=https://repo.maven.apache.org/maven2/ \
           dev.galasa:galasa-maven-plugin:0.15.0:obrembedded \
           --batch-mode --errors --fail-at-end
