@@ -233,7 +233,6 @@ jobs:
             tags: javadocmavenrepo:test
             build-args: |
               dockerRepository=${{env.REGISTRY}}
-              tag=latest
               baseVersion=latest
   
   
@@ -288,3 +287,5 @@ jobs:
           file: ${{github.workspace}}/obr/dockerfiles/dockerfile.obrgeneric
           load: true
           tags: obr-generic:test
+
+      
